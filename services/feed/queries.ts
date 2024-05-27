@@ -1,5 +1,6 @@
 "use server";
 
+import { tags } from "services/tags";
 import type { CompanySize, Feed } from "./types";
 import { switchCompanySize } from "./utils";
 
@@ -132,9 +133,11 @@ export const getFeeds: GetFeeds = async (params) => {
     `${process.env.API_URL}/v1/item?${searchParams.toString()}`
   );
 
-  const response = await fetch(apiUrl).then<FeedsServerResponse>((res) =>
-    res.json()
-  );
+  const response = await fetch(apiUrl, {
+    next: {
+      tags: tags.feedTags.feeds,
+    },
+  }).then<FeedsServerResponse>((res) => res.json());
 
   const feeds = (response?.data ?? []).map((feed) => {
     const published = (() => {
@@ -183,7 +186,11 @@ type GetJobTags = () => Promise<JobTag[]>;
 export const getJobTags: GetJobTags = async () => {
   const apiUrl = new URL(`${process.env.API_URL}/v1/tag/job`);
 
-  const response = await fetch(apiUrl).then<JobTag[]>((res) => res.json());
+  const response = await fetch(apiUrl, {
+    next: {
+      tags: tags.feedTags.jobs,
+    },
+  }).then<JobTag[]>((res) => res.json());
 
   return response;
 };
@@ -198,7 +205,11 @@ type GetSkillTags = () => Promise<SkillTag[]>;
 export const getSkillTags: GetSkillTags = async () => {
   const apiUrl = new URL(`${process.env.API_URL}/v1/tag/skill`);
 
-  const response = await fetch(apiUrl).then<SkillTag[]>((res) => res.json());
+  const response = await fetch(apiUrl, {
+    next: {
+      tags: tags.feedTags.skills,
+    },
+  }).then<SkillTag[]>((res) => res.json());
 
   return response;
 };
