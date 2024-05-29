@@ -141,7 +141,6 @@ export const getFeeds: GetFeeds = async (params) => {
       try {
         return new Date(feed.item_published);
       } catch (error) {
-        console.error(error);
         return null;
       }
     })();

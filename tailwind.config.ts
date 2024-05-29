@@ -27,6 +27,7 @@ const config: Config = {
     },
     screens: {
       tablet: "768px",
+      wideTablet: "1024px",
       laptop: "1440px",
       desktop: "1920px",
     },
