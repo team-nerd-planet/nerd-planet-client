@@ -43,12 +43,12 @@ const HomePage = async ({
   );
 
   return (
-    <div className="relative">
-      <div className="z-10 sticky flex items-center top-[var(--header-height)] w-full h-[calc(108px+3rem)] desktop:h-[124px] rounded-[10px] bg-background">
+    <div className="relative scroll-smooth">
+      <div className="z-10 flex items-center top-[var(--header-height)] w-full h-[calc(108px+3rem)] desktop:h-[124px] rounded-[10px] bg-background">
         <Banner />
       </div>
-      <div className="relative flex justify-center desktop:justify-between">
-        <div className="z-10 sticky top-[calc(var(--header-height)+124px)] w-[216px] p-[10px] h-fit hidden desktop:flex">
+      <div className="relative flex flex-col laptop:flex-row desktop:flex-row justify-center desktop:justify-between">
+        <div className="flex-1 laptop:w-[216px] p-[10px] h-fit laptop:flex desktop:flex">
           <FeedFilter
             filterOptions={{
               company: _company,
