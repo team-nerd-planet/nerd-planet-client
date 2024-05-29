@@ -1,0 +1,10 @@
+# *
+User-agent: *
+Allow: /
+Disallow: /api/*
+
+# Host
+Host: https://nerdplanet.app
+
+# Sitemaps
+Sitemap: https://nerdplanet.app/sitemap.xml
