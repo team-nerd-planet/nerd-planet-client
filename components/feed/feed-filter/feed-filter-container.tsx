@@ -23,7 +23,7 @@ const FeedFilterContainer = async ({
   filterOptions,
 }: FeedFilterContainerProps) => {
   return (
-    <div className="stack gap-5">
+    <div className="gap-5 flex-1 text-white flex flex-col">
       <CompanyNameForm searchCompanyName={filterOptions?.company ?? ""} />
       <CompanySizeForm companySizes={filterOptions?.companySizes ?? []} />
       <ErrorBoundary
@@ -52,7 +52,7 @@ type JobFormContainerProps = {
   searchJobIds: number[];
 };
 
-const JobFormContainer = async ({ searchJobIds }: JobFormContainerProps) => {
+export const JobFormContainer = async ({ searchJobIds }: JobFormContainerProps) => {
   const jobs = await getJobTags();
 
   return <JobForm jobs={jobs} searchJobIds={searchJobIds} />;
@@ -62,7 +62,7 @@ type SkillFormContainerProps = {
   searchSkillIds: number[];
 };
 
-const SkillFormContainer = async ({
+export const SkillFormContainer = async ({
   searchSkillIds,
 }: SkillFormContainerProps) => {
   const skills = await getSkillTags();

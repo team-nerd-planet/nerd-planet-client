@@ -5,9 +5,11 @@ import { cn } from "lib/utils";
 import Link from "next/link";
 import { useState } from "react";
 import { pages } from "../constants";
+import { useRouter } from "next/navigation";
 
 const MobileMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
 
   return (
     <>
@@ -23,32 +25,40 @@ const MobileMenu = () => {
       <nav
         className={cn(
           "tablet:hidden stack fixed top-[var(--header-height)] left-0 w-full h-[calc(100%-var(--header-height))] py-6 justify-between bg-[#26272b] z-mobileMenu transform transition-transform",
-          isOpen ? "translate-x-0" : "translate-x-full"
+          isOpen
+            ? "-translate-y-[0px]"
+            : "-translate-y-[calc(100%+var(--header-height))]"
         )}
       >
         <div className="stack gap-2">
           {pages.map(({ name, link }) => {
             return (
-              <Link
+              <div
                 key={name}
-                className="flex center h-12 hover:bg-[#1c1c20] font-semibold"
-                href={link}
+                className="flex center h-12 hover:bg-[#1c1c20] font-semibold text-[#F8F9FE] cursor-pointer"
+                onClick={() => {
+                  setIsOpen(false);
+                  router.push(link);
+                }}
               >
                 {name}
-              </Link>
+              </div>
             );
           })}
         </div>
         <div className="mb-8 flex center">
           {footerMenus.map(({ name, link }) => {
             return (
-              <Link
+              <div
                 key={name}
-                className="w-fit text-[11px] font-semibold"
-                href={link}
+                className="w-fit text-[11px] font-semibold text-[#F8F9FE] cursor-pointer"
+                onClick={() => {
+                  setIsOpen(false);
+                  router.replace("/policy/privacy");
+                }}
               >
                 {name}
-              </Link>
+              </div>
             );
           })}
         </div>

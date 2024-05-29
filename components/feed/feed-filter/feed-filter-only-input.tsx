@@ -4,34 +4,18 @@ import { type HomeSearchParams } from "app/page";
 import Badge from "components/badge";
 import Input from "components/input";
 import FilterIcon from "icons/filter-icon.svg";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { type PropsWithChildren } from "react";
+import { useState, type PropsWithChildren } from "react";
 import type { CompanySize } from "services/feed/types";
-import { useDebouncedCallback } from "use-debounce";
 
 type CompanyNameProps = {
   searchCompanyName: string;
+  setSearchCompanyName: (companyName: string) => void;
 };
 
-export const CompanyNameForm = ({ searchCompanyName }: CompanyNameProps) => {
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { replace } = useRouter();
-
-  const onSearchCompanyName = useDebouncedCallback((value: string) => {
-    const params = new URLSearchParams(searchParams);
-
-    const key = HomeSearchParamsKeys.company;
-
-    if (value.trim() === "") {
-      params.delete(key);
-    } else {
-      params.set(key, value);
-    }
-
-    replace(`${pathname}?${params.toString()}`);
-  }, 300);
-
+export const CompanyNameForm = ({
+  searchCompanyName,
+  setSearchCompanyName,
+}: CompanyNameProps) => {
   return (
     <Container>
       <Label>기업명</Label>
@@ -39,7 +23,7 @@ export const CompanyNameForm = ({ searchCompanyName }: CompanyNameProps) => {
         className="w-[208px] h-[40px]"
         defaultValue={searchCompanyName}
         onChange={({ target: { value } }) => {
-          onSearchCompanyName(value);
+          setSearchCompanyName(value);
         }}
         placeholder="기업명을 입력해주세요"
       />
@@ -49,33 +33,13 @@ export const CompanyNameForm = ({ searchCompanyName }: CompanyNameProps) => {
 
 type CompanySizeProps = {
   companySizes: CompanySize[];
+  setCompanySizes: (companySizes: CompanySize[]) => void;
 };
 
-export const CompanySizeForm = ({ companySizes }: CompanySizeProps) => {
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { replace } = useRouter();
-
-  const onSearchCompanySize = (value: CompanySize) => {
-    const params = new URLSearchParams(searchParams);
-
-    const key = HomeSearchParamsKeys.companySize;
-
-    if (companySizes.includes(value)) {
-      const result = companySizes.filter((v) => v !== value);
-
-      if (result.length === 0) {
-        params.delete(key);
-      } else {
-        params.set(key, result.join(","));
-      }
-    } else {
-      params.set(key, [...companySizes, value].join(","));
-    }
-
-    replace(`${pathname}?${params.toString()}`);
-  };
-
+export const CompanySizeForm = ({
+  companySizes,
+  setCompanySizes,
+}: CompanySizeProps) => {
   return (
     <Container>
       <Label>기업규모</Label>
@@ -86,7 +50,7 @@ export const CompanySizeForm = ({ companySizes }: CompanySizeProps) => {
               key={value}
               active={companySizes.includes(value)}
               onClick={() => {
-                onSearchCompanySize(value);
+                setCompanySizes([...companySizes, value]);
               }}
             >
               {label}
@@ -104,33 +68,14 @@ type JobFormProps = {
     name: string;
   }[];
   searchJobIds: number[];
+  setSearchJobIds: (searchJobIds: number[]) => void;
 };
 
-export const JobForm = ({ jobs, searchJobIds }: JobFormProps) => {
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { replace } = useRouter();
-
-  const onSearchJob = (jobId: number) => {
-    const params = new URLSearchParams(searchParams);
-
-    const key = HomeSearchParamsKeys.jobTagIds;
-
-    if (searchJobIds.includes(jobId)) {
-      const result = searchJobIds.filter((id) => id !== jobId);
-
-      if (result.length === 0) {
-        params.delete(key);
-      } else {
-        params.set(key, result.join(","));
-      }
-    } else {
-      params.set(key, [...searchJobIds, jobId].join(","));
-    }
-
-    replace(`${pathname}?${params.toString()}`);
-  };
-
+export const JobForm = ({
+  jobs,
+  searchJobIds,
+  setSearchJobIds,
+}: JobFormProps) => {
   return (
     <Container>
       <Label>직무</Label>
@@ -141,7 +86,14 @@ export const JobForm = ({ jobs, searchJobIds }: JobFormProps) => {
               key={id}
               active={searchJobIds.includes(id)}
               onClick={() => {
-                onSearchJob(id);
+                if (searchJobIds.includes(id)) {
+                  setSearchJobIds(
+                    searchJobIds.filter((searchJobId) => searchJobId !== id)
+                  );
+                  return;
+                }
+
+                setSearchJobIds([...searchJobIds, id]);
               }}
             >
               {name}
@@ -159,33 +111,14 @@ type SkillFormProps = {
     name: string;
   }[];
   searchSkillIds: number[];
+  setSearchSkillIds: (searchSkillIds: number[]) => void;
 };
 
-export const SkillForm = ({ skills, searchSkillIds }: SkillFormProps) => {
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { replace } = useRouter();
-
-  const onSearchSkill = (skillId: number) => {
-    const params = new URLSearchParams(searchParams);
-
-    const key = HomeSearchParamsKeys.skillTagIds;
-
-    if (searchSkillIds.includes(skillId)) {
-      const result = searchSkillIds.filter((id) => id !== skillId);
-
-      if (result.length === 0) {
-        params.delete(key);
-      } else {
-        params.set(key, result.join(","));
-      }
-    } else {
-      params.set(key, [...searchSkillIds, skillId].join(","));
-    }
-
-    replace(`${pathname}?${params.toString()}`);
-  };
-
+export const SkillForm = ({
+  skills,
+  searchSkillIds,
+  setSearchSkillIds,
+}: SkillFormProps) => {
   return (
     <Container>
       <Label>기술스택</Label>
@@ -196,7 +129,16 @@ export const SkillForm = ({ skills, searchSkillIds }: SkillFormProps) => {
               key={id}
               active={searchSkillIds.includes(id)}
               onClick={() => {
-                onSearchSkill(id);
+                if (searchSkillIds.includes(id)) {
+                  setSearchSkillIds(
+                    searchSkillIds.filter(
+                      (searchSkillId) => searchSkillId !== id
+                    )
+                  );
+                  return;
+                }
+
+                setSearchSkillIds([...searchSkillIds, id]);
               }}
             >
               {name}

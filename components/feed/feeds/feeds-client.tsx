@@ -46,7 +46,7 @@ const FeedsClient = ({ feeds: initFeeds, totalPage }: FeedsClientProps) => {
 
   return (
     <ScrollArea
-      className="grid grid-cols-1 tablet:grid-cols-2 laptop:grid-cols-3 gap-[10px] laptop:gap-[20px]"
+      className="grid grid-cols-1 tablet:grid-cols-2 wideTablet:grid-cols-3 laptop:grid-cols-3 gap-[10px] laptop:gap-[20px]"
       onScrollEnd={onScrollEnd}
       ScrollEndPlaceholder={
         <span className="flex center italic h-16">

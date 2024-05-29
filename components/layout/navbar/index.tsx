@@ -11,7 +11,7 @@ const Navbar = () => {
         <nav className="hidden tablet:flex gap-2 h-full items-center">
           {pages.map(({ name, link }) => {
             return (
-              <Link key={name} className="font-semibold" href={link}>
+              <Link key={name} className="font-semibold text-[#F8F9FE]" href={link}>
                 {name}
               </Link>
             );

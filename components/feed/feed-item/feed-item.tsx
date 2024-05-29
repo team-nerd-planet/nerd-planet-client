@@ -23,7 +23,7 @@ const FeedDescription = ({
           .filter(Boolean)
           .join(" / ")}
       </h3>
-      <h2 className="font-bold">{title}</h2>
+      <h2 className="font-bold text-[#f8f9fe]">{title}</h2>
       <h3 className="text-sm text-[#f5f5f5]">{writer}</h3>
     </div>
   );

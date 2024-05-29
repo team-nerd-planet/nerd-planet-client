@@ -2,7 +2,7 @@
 
 import Logo from "components/icons/logo";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type FeedThumbnailProps = {
   thumbnail: Nullable<string>;
@@ -14,8 +14,17 @@ const FeedThumbnail = ({ thumbnail, title }: FeedThumbnailProps) => {
 
   const src = isError || !thumbnail ? "/images/feed-thumbnail.png" : thumbnail;
 
+  useEffect(() => {
+    document.getElementById("hovering")?.addEventListener("mouseenter", () => {
+      document.getElementById("target")?.classList.add("glow");
+    });
+    document.getElementById("hovering")?.addEventListener("mouseleave", () => {
+      document.getElementById("target")?.classList.remove("glow");
+    });
+  }, []);
+
   return (
-    <div className="relative w-[310px] h-[180px]">
+    <div id="hovering" className="relative w-[310px] h-[180px]">
       <Image
         className="rounded-[10px] object-cover"
         src={src}
@@ -28,8 +37,8 @@ const FeedThumbnail = ({ thumbnail, title }: FeedThumbnailProps) => {
         unoptimized
       />
       <div className="absolute -bottom-8 right-[66px] tra w-16 h-16 rounded-full bg-background flex center">
-        <div className="w-[46px] h-[46px] flex center border-[0.5px] border-border rounded-full">
-          <Logo width={27} height={23} />
+        <div id="target" className="w-[46px] h-[46px] flex center rounded-full bg-[#050514]">
+          <Logo width={24} height={24} />
         </div>
       </div>
     </div>
