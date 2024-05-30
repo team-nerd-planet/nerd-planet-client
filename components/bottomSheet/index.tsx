@@ -11,6 +11,7 @@ import { Suspense } from "react";
 import { toast } from "react-toastify";
 import { getJobTags, getSkillTags } from "services/feed/queries";
 import { CompanySize } from "services/feed/types";
+import styled from "@emotion/styled";
 
 const BottomSheet = () => {
   const [open, setOpen] = useState(false);
@@ -44,6 +45,7 @@ const BottomSheet = () => {
     jobs: [],
     skills: [],
   });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -93,11 +95,16 @@ const BottomSheet = () => {
     // ]
     // }
 
-    const apiUrl = new URL(
-      `${process.env.NEXT_PUBLIC_API_URL}/v1/subscription/apply`
-    );
+    // 먼저 이메일이 유효한지 확인
+    if (!form.email) {
+      toast.error("이메일을 입력해주세요");
+      return;
+    }
 
-    await fetch(apiUrl, {
+    setLoading(true);
+
+    // 구독신청
+    const result = await fetch("/v1/subscription/apply", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -111,12 +118,25 @@ const BottomSheet = () => {
         preferred_job_arr: form.searchJobIds,
         preferred_skill_arr: form.searchSkillIds,
       }),
-    }).then<{
-      ok?: boolean;
-      code?: 0;
-      description?: string;
-      message?: string;
-    }>((res) => res.json());
+    }).then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      return {
+        ok: false,
+        code: 0,
+        description: "Failed to subscribe",
+        message: "Failed to subscribe",
+      };
+    });
+
+    if (result.ok) {
+      toast.success("구독이 완료되었습니다.");
+    } else {
+      toast.error(result.message || "Failed to subscribe");
+    }
+
+    setLoading(false);
   };
 
   return (
@@ -125,6 +145,9 @@ const BottomSheet = () => {
         <div className="relative w-full flex justify-end items-center">
           <button
             onClick={() => {
+              if (!open) {
+                toast.success("내가 설정한 카테고리를 가져왔어요!");
+              }
               setOpen(!open);
             }}
             className="z-[99] px-[29px] py-[13px] h-[45px] bg-[#93ebff] text-[#1e1e1e] text-[16px] font-bold rounded-[10px] flex justify-center items-center cursor-pointer hover:bg-[#6ed1ff] transition-colors duration-300"
@@ -153,11 +176,12 @@ const BottomSheet = () => {
             </svg>
           </div>
         </div>
-        <div
-          className={`gap-[24px] transition-all duration-500 overflow-scroll flex flex-col justify-start items-center wideTablet:flex-row wideTablet:justify-center laptop:flex-row ${
+        <Box
+          scrollVisible={false}
+          className={`gap-[24px] transition-all duration-500 overflow-scroll flex flex-col justify-start items-center wideTablet:flex-row wideTablet:justify-center laptop:flex-row scroll-smooth ${
             open
               ? "p-[36px] max-h-[378px] tablet:max-h-[478px] wideTablet:max-h-[578px] laptop:max-h-[678px] desktop:max-h-[678px]"
-              : "p-0 max-h-0"
+              : "px-[36px] py-0 max-h-0"
           }`}
         >
           <div className="gap-5 text-white flex flex-col py-[10px]">
@@ -236,18 +260,37 @@ const BottomSheet = () => {
                   onClick={handleSubscription}
                   className="w-full max-w-[400px] px-[20px] py-[13px] bg-[#93ebff] text-[#1e1e1e] text-[16px] font-bold rounded-[10px] flex justify-center items-center cursor-pointer hover:bg-[#6ed1ff] transition-colors duration-300"
                 >
-                  구독하기
+                  {loading ? (
+                    <div className="w-5 h-5 border-[2px] border-[#1e1e1e] border-dashed rounded-full animate-spin"></div>
+                  ) : (
+                    "구독하기"
+                  )}
                 </button>
               </div>
             </div>
           </div>
-        </div>
+        </Box>
       </div>
     </div>
   );
 };
 
 export default BottomSheet;
+
+const Box = styled.div<{
+  scrollVisible: boolean;
+}>`
+  ${({ scrollVisible }) =>
+    scrollVisible
+      ? ``
+      : `
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none;
+  `}
+`;
 
 // const FilterSection = () => {
 //   // 파라미터 가져오기
