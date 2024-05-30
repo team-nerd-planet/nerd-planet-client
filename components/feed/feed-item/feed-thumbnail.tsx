@@ -3,6 +3,7 @@
 import Logo from "components/icons/logo";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import styled from "@emotion/styled";
 
 type FeedThumbnailProps = {
   thumbnail: Nullable<string>;
@@ -37,7 +38,34 @@ const FeedThumbnail = ({ thumbnail, title }: FeedThumbnailProps) => {
         unoptimized
       />
       <div className="absolute -bottom-8 right-[66px] tra w-16 h-16 rounded-full bg-background flex center">
-        <div id="target" className="w-[46px] h-[46px] flex center rounded-full bg-[#050514]">
+        <div
+          id="target"
+          className="w-[46px] h-[46px] flex center rounded-full bg-[#050514]"
+        >
+          <div
+            className="star"
+            style={{ top: "45%", left: "30%", animationDelay: "0.3s" }}
+          ></div>
+          <div
+            className="star"
+            style={{ top: "70%", left: "50%", animationDelay: "0.5s" }}
+          ></div>
+          <div
+            className="star"
+            style={{ top: "60%", left: "63%", animationDelay: "0.8s" }}
+          ></div>
+          <div
+            className="star"
+            style={{ top: "25%", left: "55%", animationDelay: "0.4s" }}
+          ></div>
+          <div
+            className="star"
+            style={{ top: "70%", left: "30%", animationDelay: "0.2s" }}
+          ></div>
+          <div
+            className="star"
+            style={{ top: "45%", left: "70%", animationDelay: "0.4s" }}
+          ></div>
           <Logo width={24} height={24} />
         </div>
       </div>
