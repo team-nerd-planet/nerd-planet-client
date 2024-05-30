@@ -10,6 +10,10 @@
     --foreground: #f8f9fe;
     --border: #e3e3e3;
     --header-height: 65px;
+    --toastify-icon-color-success: #93ebff !important;
+    --toastify-color-light: #26272b !important;
+    --toastify-text-color-light: #f8f9fe !important;
+    --toastify-color-progress-success: #93ebff !important;
   }
   * {
     @apply border-border;
@@ -62,5 +66,26 @@
         0 0 50px var(--foreground), 0 0 60px var(--foreground),
         0 0 70px var(--foreground), 0 0 80px var(--foreground);
     }
+  }
+}
+
+.star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: white;
+  border-radius: 50%;
+  animation: twinkle 2s infinite;
+
+  filter: blur(1px);
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
   }
 }

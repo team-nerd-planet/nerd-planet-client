@@ -43,7 +43,7 @@ const HomePage = async ({
   );
 
   return (
-    <div className="relative scroll-smooth">
+    <div className="relative scroll-smooth scrollbar-hide">
       <div className="z-10 flex items-center top-[var(--header-height)] w-full h-[calc(108px+3rem)] desktop:h-[124px] rounded-[10px] bg-background">
         <Banner />
       </div>

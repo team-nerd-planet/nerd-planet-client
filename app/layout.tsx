@@ -4,6 +4,7 @@ import { Suspense, type ReactNode } from "react";
 import "./globals.css";
 import BottomSheet from "components/bottomSheet";
 import { ToastContainer, Flip } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google";
 
 export const metadata: Metadata = {
@@ -123,7 +124,7 @@ export default function RootLayout({
       <body className="relative">
         <Navbar />
         <main className="w-full min-h-[calc(100vh-var(--header-height))] bg-[#1C1C20]">
-          <div className="max-w-screen-laptop mx-auto px-[36px]">
+          <div className="max-w-screen-laptop mx-auto px-[12px] tablet:px-[24px] laptop:px-[36px]">
             {children}
           </div>
         </main>
@@ -134,7 +135,7 @@ export default function RootLayout({
         <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID || ""} />
         <ToastContainer
           position="top-center"
-          autoClose={2000}
+          autoClose={10000}
           hideProgressBar={false}
           newestOnTop={false}
           closeOnClick
@@ -144,6 +145,9 @@ export default function RootLayout({
           pauseOnHover
           theme="light"
           transition={Flip}
+          className="toast-success"
+          bodyClassName="toast-body"
+          progressClassName="toast-progress"
         />
       </body>
     </html>

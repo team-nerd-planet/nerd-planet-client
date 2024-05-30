@@ -22,7 +22,7 @@ const config: Config = {
         header: "var(--header-height)",
       },
       zIndex: {
-        mobileMenu: "9999",
+        mobileMenu: "99",
       },
     },
     screens: {
@@ -32,7 +32,7 @@ const config: Config = {
       desktop: "1920px",
     },
   },
-  plugins: [],
+  plugins: [require("tailwind-scrollbar-hide")],
   corePlugins: {
     preflight: false,
   },
