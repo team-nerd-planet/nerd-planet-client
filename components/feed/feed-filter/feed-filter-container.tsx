@@ -19,7 +19,7 @@ type FeedFilterContainerProps = {
   };
 };
 
-const FeedFilterContainer = async ({
+export const FeedFilterContainer = async ({
   filterOptions,
 }: FeedFilterContainerProps) => {
   return (
@@ -52,7 +52,9 @@ type JobFormContainerProps = {
   searchJobIds: number[];
 };
 
-export const JobFormContainer = async ({ searchJobIds }: JobFormContainerProps) => {
+export const JobFormContainer = async ({
+  searchJobIds,
+}: JobFormContainerProps) => {
   const jobs = await getJobTags();
 
   return <JobForm jobs={jobs} searchJobIds={searchJobIds} />;

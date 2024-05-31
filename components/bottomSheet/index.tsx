@@ -7,7 +7,6 @@ import {
 } from "components/feed/feed-filter/feed-filter-only-input";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Suspense } from "react";
 import { toast } from "react-toastify";
 import { getJobTags, getSkillTags } from "services/feed/queries";
 import { CompanySize } from "services/feed/types";
@@ -141,8 +140,8 @@ const BottomSheet = () => {
 
   return (
     <div className="z-[99] w-full flex justify-center fixed bottom-0">
-      <div className="relative w-full max-w-screen-laptop p-[15px] bg-[#26272b] z-[99] rounded-tr-[20px] rounded-tl-[20px]">
-        <div className="relative w-full flex justify-end items-center">
+      <div className="relative w-full max-w-screen-laptop px-[15px] pt-[15px] bg-[#26272b] z-[99] rounded-tr-[20px] rounded-tl-[20px]">
+        <div className="relative w-full flex justify-end items-center mb-[15px]">
           <button
             onClick={() => {
               if (!open) {
@@ -180,7 +179,7 @@ const BottomSheet = () => {
           scrollVisible={false}
           className={`gap-[24px] transition-all duration-500 overflow-scroll flex flex-col justify-start items-center wideTablet:flex-row wideTablet:justify-center laptop:flex-row scroll-smooth ${
             open
-              ? "p-[36px] max-h-[378px] tablet:max-h-[478px] wideTablet:max-h-[578px] laptop:max-h-[678px] desktop:max-h-[678px]"
+              ? "px-[36px] pb-[36px] max-h-[378px] tablet:max-h-[478px] wideTablet:max-h-[578px] laptop:max-h-[678px] desktop:max-h-[678px]"
               : "px-[36px] py-0 max-h-0"
           }`}
         >
