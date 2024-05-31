@@ -1,5 +1,6 @@
 {
   "name": "nerd-planet",
+  "short_name": "nerd-planet",
   "icons": [
     {
       "src": "/android-icon-36x36.png",
@@ -37,5 +38,12 @@
       "type": "image/png",
       "density": "4.0"
     }
-  ]
+  ],
+  "theme_color": "#1c1c20",
+  "background_color": "#1c1c20",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "categories": ["education", "technology", "feed", "post", "blog"],
+  "description": "내가 원하는 카테고리만 설정하면 끝! 원하는 글만 쏙쏙 골라 보내드릴게요."
 }
