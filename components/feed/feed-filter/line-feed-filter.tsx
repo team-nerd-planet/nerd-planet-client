@@ -16,7 +16,7 @@ const LineFeedFilter = ({
     <div className="relative">
       <div className="toggle-wrapper laptop:hidden">
         <div className="text-[20px] text-white font-semibold pl-[10px]">
-          카테고리 보기
+          상세조건
         </div>
         <input type="checkbox" id="toggle-panel" className="toggle-input" />
         <label htmlFor="toggle-panel" className="toggle-slider"></label>
