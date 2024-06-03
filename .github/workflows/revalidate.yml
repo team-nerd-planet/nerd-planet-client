@@ -1,0 +1,22 @@
+name: revalidate
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 19 * * *' # 매일 04시
+
+jobs:
+  api-call:
+    name: revalidate feed
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Revalidate Feeds
+        id: revalidate-feeds
+        run: |
+          curl --request GET \
+          --url 'https://nerdplanet.vercel.app/api/revalidate?tag=feeds&tag=skills&tag=jobs' \
+          --header 'Authorization: ${{ secrets.REVALIDATE_SECRET }}'
