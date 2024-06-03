@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import { getJobTags, getSkillTags } from "services/feed/queries";
 import { CompanySize } from "services/feed/types";
 import styled from "@emotion/styled";
+import { switchCompanySize } from "services/feed/utils";
 
 const BottomSheet = () => {
   const [open, setOpen] = useState(false);
@@ -112,8 +113,10 @@ const BottomSheet = () => {
         division: form.belong,
         email: form.email,
         name: form.name,
-        preferred_companySize_arr: form.searchCompanySize,
-        preferred_company_arr: form.searchCompanySize,
+        preferred_companySize_arr: form.searchCompanySize.map((size) =>
+          switchCompanySize(size as CompanySize)
+        ),
+        preferred_company_arr: [],
         preferred_job_arr: form.searchJobIds,
         preferred_skill_arr: form.searchSkillIds,
       }),
