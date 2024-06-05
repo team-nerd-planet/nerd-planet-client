@@ -1,10 +1,9 @@
 "use client";
 
-import { type HomeSearchParams } from "app/page";
 import Badge from "components/badge";
 import Input from "components/input";
 import FilterIcon from "icons/filter-icon.svg";
-import { useState, type PropsWithChildren } from "react";
+import { type PropsWithChildren } from "react";
 import type { CompanySize } from "services/feed/types";
 
 type CompanyNameProps = {
@@ -207,11 +206,4 @@ export const TagFormSkeleton = ({
       </div>
     </Container>
   );
-};
-
-const HomeSearchParamsKeys: Record<keyof HomeSearchParams, string> = {
-  company: "company",
-  companySize: "companySize",
-  jobTagIds: "jobTagIds",
-  skillTagIds: "skillTagIds",
 };
