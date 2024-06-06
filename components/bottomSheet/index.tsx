@@ -1,40 +1,46 @@
 "use client";
+
+import styled from "@emotion/styled";
 import {
-  // CompanyNameForm,
   CompanySizeForm,
   JobForm,
   SkillForm,
 } from "components/feed/feed-filter/feed-filter-only-input";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { toast } from "react-toastify";
 import { getJobTags, getSkillTags } from "services/feed/queries";
 import { CompanySize } from "services/feed/types";
-import styled from "@emotion/styled";
 import { switchCompanySize } from "services/feed/utils";
+import { subscriptionAction } from "./actions";
+
+type FormFieldValues = {
+  email: string;
+  name: string;
+  belong: string;
+  searchCompanyName: string;
+  searchCompanySize: string[];
+  searchJobIds: number[];
+  searchSkillIds: number[];
+  jobs: {
+    id: number;
+    name: string;
+  }[];
+  skills: {
+    id: number;
+    name: string;
+  }[];
+};
 
 const BottomSheet = () => {
+  const [isPending, startTransition] = useTransition();
   const [open, setOpen] = useState(false);
   // 파라미터 가져오기
   const searchParams = useSearchParams();
-  const params = new URLSearchParams(searchParams);
-  const [form, setForm] = useState<{
-    email: string;
-    name: string;
-    belong: string;
-    searchCompanyName: string;
-    searchCompanySize: string[];
-    searchJobIds: number[];
-    searchSkillIds: number[];
-    jobs: {
-      id: number;
-      name: string;
-    }[];
-    skills: {
-      id: number;
-      name: string;
-    }[];
-  }>({
+  const params = useMemo(() => {
+    return new URLSearchParams(searchParams);
+  }, [searchParams]);
+  const [form, setForm] = useState<FormFieldValues>({
     email: "",
     name: "",
     belong: "",
@@ -45,100 +51,57 @@ const BottomSheet = () => {
     jobs: [],
     skills: [],
   });
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchTags = async () => {
       const jobs = await getJobTags();
       const skills = await getSkillTags();
 
-      setForm({
-        ...form,
-        jobs,
-        skills,
+      setForm((prev) => {
+        return {
+          ...prev,
+          jobs,
+          skills,
+        };
       });
     };
 
     fetchTags();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    setForm({
-      ...form,
-      searchCompanyName: params.get("company") || "",
-      searchCompanySize: params.get("companySize")?.split(",") || [],
-      searchJobIds: params.get("jobTagIds")?.split(",").map(Number) || [],
-      searchSkillIds: params.get("skillTagIds")?.split(",").map(Number) || [],
+    setForm((prev) => {
+      return {
+        ...prev,
+        searchCompanyName: params.get("company") || "",
+        searchCompanySize: params.get("companySize")?.split(",") || [],
+        searchJobIds: params.get("jobTagIds")?.split(",").map(Number) || [],
+        searchSkillIds: params.get("skillTagIds")?.split(",").map(Number) || [],
+      };
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+  }, [params]);
 
   const handleSubscription = async () => {
-    // endpoint: /v1/subscription/apply
-    // method: POST
-    // body: {
-    // "division": "string",
-    // "email": "string",
-    // "name": "string",
-    // "preferred_companySize_arr": [
-    //   0
-    // ],
-    // "preferred_company_arr": [
-    //   0
-    // ],
-    // "preferred_job_arr": [
-    //   0
-    // ],
-    // "preferred_skill_arr": [
-    //   0
-    // ]
-    // }
-
-    // 먼저 이메일이 유효한지 확인
-    if (!form.email) {
-      toast.error("이메일을 입력해주세요");
-      return;
-    }
-
-    setLoading(true);
-
-    // 구독신청
-    const result = await fetch("/v1/subscription/apply", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    startTransition(async () => {
+      const { ok, message } = await subscriptionAction({
         division: form.belong,
         email: form.email,
         name: form.name,
-        preferred_companySize_arr: form.searchCompanySize.map((size) =>
+        preferredCompanySizeArr: form.searchCompanySize.map((size) =>
           switchCompanySize(size as CompanySize)
         ),
-        preferred_company_arr: [],
-        preferred_job_arr: form.searchJobIds,
-        preferred_skill_arr: form.searchSkillIds,
-      }),
-    }).then((res) => {
-      if (res.ok) {
-        return res.json();
+        preferredCompanyArr: [],
+        preferredJobArr: form.searchJobIds,
+        preferredSkillArr: form.searchSkillIds,
+      });
+
+      if (ok) {
+        toast.success(message);
+        return;
       }
-      return {
-        ok: false,
-        code: 0,
-        description: "Failed to subscribe",
-        message: "Failed to subscribe",
-      };
+
+      toast.error(message);
     });
-
-    if (result.ok) {
-      toast.success("구독이 완료되었습니다.");
-    } else {
-      toast.error(result.message || "Failed to subscribe");
-    }
-
-    setLoading(false);
   };
 
   return (
@@ -262,7 +225,7 @@ const BottomSheet = () => {
                   onClick={handleSubscription}
                   className="w-full max-w-[400px] px-[20px] py-[13px] bg-[#93ebff] text-[#1e1e1e] text-[16px] font-bold rounded-[10px] flex justify-center items-center cursor-pointer hover:bg-[#6ed1ff] transition-colors duration-300"
                 >
-                  {loading ? (
+                  {isPending ? (
                     <div className="w-5 h-5 border-[2px] border-[#1e1e1e] border-dashed rounded-full animate-spin"></div>
                   ) : (
                     "구독하기"
@@ -293,88 +256,3 @@ const Box = styled.div<{
   -ms-overflow-style: none;
   `}
 `;
-
-// const FilterSection = () => {
-//   // 파라미터 가져오기
-//   const searchParams = useSearchParams();
-//   const params = new URLSearchParams(searchParams);
-//   const [form, setForm] = useState<{
-//     searchCompanyName: string;
-//     searchCompanySize: string[];
-//     searchJobIds: number[];
-//     searchSkillIds: number[];
-//     jobs: {
-//       id: number;
-//       name: string;
-//     }[];
-//     skills: {
-//       id: number;
-//       name: string;
-//     }[];
-//   }>({
-//     searchCompanyName: params.get("company") || "",
-//     searchCompanySize: params.get("companySize")?.split(",") || [],
-//     searchJobIds: params.get("jobTagIds")?.split(",").map(Number) || [],
-//     searchSkillIds: params.get("skillTagIds")?.split(",").map(Number) || [],
-//     jobs: [],
-//     skills: [],
-//   });
-
-//   useEffect(() => {
-//     const fetchTags = async () => {
-//       const jobs = await getJobTags();
-//       const skills = await getSkillTags();
-
-//       setForm({
-//         ...form,
-//         jobs,
-//         skills,
-//       });
-//     };
-
-//     fetchTags();
-//     // eslint-disable-next-line react-hooks/exhaustive-deps
-//   }, []);
-
-//   useEffect(() => {
-//     setForm({
-//       ...form,
-//       searchCompanyName: params.get("company") || "",
-//       searchCompanySize: params.get("companySize")?.split(",") || [],
-//       searchJobIds: params.get("jobTagIds")?.split(",").map(Number) || [],
-//       searchSkillIds: params.get("skillTagIds")?.split(",").map(Number) || [],
-//     });
-//     // eslint-disable-next-line react-hooks/exhaustive-deps
-//   }, [searchParams]);
-
-//   return (
-//     <>
-//       {/* <CompanyNameForm
-//         searchCompanyName={form.searchCompanyName}
-//         setSearchCompanyName={(searchCompanyName) => {
-//           setForm({ ...form, searchCompanyName });
-//         }}
-//       /> */}
-//       <CompanySizeForm
-//         companySizes={form.searchCompanySize as CompanySize[]}
-//         setCompanySizes={(companySizes) => {
-//           setForm({ ...form, searchCompanySize: [...companySizes] });
-//         }}
-//       />
-//       <JobForm
-//         jobs={form.jobs}
-//         searchJobIds={form.searchJobIds}
-//         setSearchJobIds={(searchJobIds) => {
-//           setForm({ ...form, searchJobIds: [...searchJobIds] });
-//         }}
-//       />
-//       <SkillForm
-//         skills={form.skills}
-//         searchSkillIds={form.searchSkillIds}
-//         setSearchSkillIds={(searchSkillIds) => {
-//           setForm({ ...form, searchSkillIds: [...searchSkillIds] });
-//         }}
-//       />
-//     </>
-//   );
-// };
