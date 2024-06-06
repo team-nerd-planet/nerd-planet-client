@@ -29,14 +29,14 @@ const Feeds = async ({
     return <FeedsEmpty />;
   }
 
-  return <FeedsClient feeds={feeds} totalPage={totalPage} />;
+  return <FeedsClient feeds={feeds} page={page} totalPage={totalPage} />;
 };
 
 export default Feeds;
 
 const FeedsEmpty = () => {
   return (
-    <div className="flex center w-full text-xl font-bold text-white py-[36px]">
+    <div className="flex flex-1 center w-full text-xl font-bold text-white py-[36px]">
       조건에 맞는 글이 없어요 😢
       <br />
       <br />
@@ -47,7 +47,7 @@ const FeedsEmpty = () => {
 
 export const FeedsErrorFallback = () => {
   return (
-    <div className="flex center w-full text-xl font-bold text-white">
+    <div className="flex flex-1 center text-xl font-bold text-white">
       글을 불러오는 중에 오류가 발생했어요 😢
       <br />
       <br />
