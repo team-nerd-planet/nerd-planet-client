@@ -1,10 +1,10 @@
 "use client";
 
-import { type HomeSearchParams } from "app/page";
 import Badge from "components/badge";
 import Input from "components/input";
 import FilterIcon from "icons/filter-icon.svg";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { HomeSearchParamsKeys } from "params/home";
 import { type PropsWithChildren } from "react";
 import type { CompanySize } from "services/feed/types";
 import { useDebouncedCallback } from "use-debounce";
@@ -265,11 +265,4 @@ export const TagFormSkeleton = ({
       </div>
     </Container>
   );
-};
-
-const HomeSearchParamsKeys: Record<keyof HomeSearchParams, string> = {
-  company: "company",
-  companySize: "companySize",
-  jobTagIds: "jobTagIds",
-  skillTagIds: "skillTagIds",
 };
