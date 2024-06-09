@@ -2,6 +2,7 @@
 
 import styled from "@emotion/styled";
 import {
+  CompanyNameForm,
   CompanySizeForm,
   JobForm,
   SkillForm,
@@ -13,12 +14,13 @@ import { getJobTags, getSkillTags } from "services/feed/queries";
 import { CompanySize } from "services/feed/types";
 import { switchCompanySize } from "services/feed/utils";
 import { subscriptionAction } from "./actions";
+import Image from "next/image";
 
 type FormFieldValues = {
   email: string;
   name: string;
   belong: string;
-  searchCompanyName: string;
+  searchCompanyName: string[];
   searchCompanySize: string[];
   searchJobIds: number[];
   searchSkillIds: number[];
@@ -35,6 +37,7 @@ type FormFieldValues = {
 const BottomSheet = () => {
   const [isPending, startTransition] = useTransition();
   const [open, setOpen] = useState(false);
+  const [modal, setModal] = useState(false);
   // 파라미터 가져오기
   const searchParams = useSearchParams();
   const params = useMemo(() => {
@@ -44,7 +47,9 @@ const BottomSheet = () => {
     email: "",
     name: "",
     belong: "",
-    searchCompanyName: params.get("company") || "",
+    searchCompanyName: params.get("companySize")
+      ? [params.get("companySize")!]
+      : [],
     searchCompanySize: params.get("companySize")?.split(",") || [],
     searchJobIds: params.get("jobTagIds")?.split(",").map(Number) || [],
     searchSkillIds: params.get("skillTagIds")?.split(",").map(Number) || [],
@@ -73,7 +78,9 @@ const BottomSheet = () => {
     setForm((prev) => {
       return {
         ...prev,
-        searchCompanyName: params.get("company") || "",
+        searchCompanyName: params.get("companySize")
+          ? [params.get("companySize")!]
+          : [],
         searchCompanySize: params.get("companySize")?.split(",") || [],
         searchJobIds: params.get("jobTagIds")?.split(",").map(Number) || [],
         searchSkillIds: params.get("skillTagIds")?.split(",").map(Number) || [],
@@ -97,6 +104,18 @@ const BottomSheet = () => {
 
       if (ok) {
         toast.success(message);
+        setForm({
+          email: "",
+          name: "",
+          belong: "",
+          searchCompanyName: [],
+          searchCompanySize: [],
+          searchJobIds: [],
+          searchSkillIds: [],
+          jobs: form.jobs,
+          skills: form.skills,
+        });
+        setModal(true);
         return;
       }
 
@@ -145,18 +164,18 @@ const BottomSheet = () => {
           scrollVisible={false}
           className={`gap-[24px] transition-all duration-500 overflow-scroll flex flex-col justify-start items-center wideTablet:flex-row wideTablet:justify-center laptop:flex-row scroll-smooth ${
             open
-              ? "px-[36px] pb-[36px] max-h-[378px] tablet:max-h-[478px] wideTablet:max-h-[578px] laptop:max-h-[678px] desktop:max-h-[678px]"
+              ? "px-[36px] pb-[36px] max-h-[378px] tablet:max-h-[478px] wideTablet:max-h-[678px] laptop:max-h-[678px] desktop:max-h-[678px]"
               : "px-[36px] py-0 max-h-0"
           }`}
         >
           <div className="gap-5 text-white flex flex-col py-[10px]">
             <div className="max-w-[400px] mx-auto flex flex-col gap-[20px]">
-              {/* <CompanyNameForm
-        searchCompanyName={form.searchCompanyName}
-        setSearchCompanyName={(searchCompanyName) => {
-          setForm({ ...form, searchCompanyName });
-        }}
-      /> */}
+              <CompanyNameForm
+                searchCompanyName={form.searchCompanyName}
+                setSearchCompanyName={(searchCompanyName) => {
+                  setForm({ ...form, searchCompanyName });
+                }}
+              />
               <CompanySizeForm
                 companySizes={form.searchCompanySize as CompanySize[]}
                 setCompanySizes={(companySizes) => {
@@ -236,6 +255,80 @@ const BottomSheet = () => {
           </div>
         </Box>
       </div>
+      <Modal open={modal}>
+        <Content>
+          <div
+            style={{
+              position: "absolute",
+              top: "10px",
+              right: "10px",
+              cursor: "pointer",
+            }}
+            onClick={() => setModal(false)}
+          >
+            <svg
+              width={16}
+              height={16}
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M3.95372 3L8 7.04628L12.0463 3L13 3.95372L8.95372 8L13 12.0463L12.0463 13L8 8.95372L3.95372 13L3 12.0463L7.04628 8L3 3.95372L3.95372 3Z"
+                fill={"white"}
+                stroke={"white"}
+                strokeWidth="0.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: "20px",
+            }}
+          >
+            <Image
+              src={
+                "https://imagedelivery.net/6qzLODAqs2g1LZbVYqtuQw/c128208d-c3ff-488f-93d7-4ba3ce866c00/public"
+              }
+              alt="mail"
+              width={64}
+              height={64}
+            />
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "20px",
+                  fontWeight: "bold",
+                  color: "#f8f9fe",
+                }}
+              >
+                인증 이메일이 발송되었어요.
+              </div>
+              <div
+                style={{
+                  fontSize: "12px",
+                  color: "#f8f9fe",
+                }}
+              >
+                인증이 완료되면 매일 아침 새로운 글을 받아보실 수 있어요.
+              </div>
+            </div>
+          </div>
+        </Content>
+      </Modal>
     </div>
   );
 };
@@ -255,4 +348,32 @@ const Box = styled.div<{
   }
   -ms-overflow-style: none;
   `}
+`;
+
+const Modal = styled.div<{
+  open?: boolean;
+}>`
+  display: ${({ open }) => (open ? "flex" : "none")}; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 99; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+  justify-content: center;
+  align-items: center;
+`;
+
+const Content = styled.div`
+  background-color: #1c1c20;
+  padding: 36px 24px;
+  width: 400px;
+  height: 200px;
+  border-radius: 10px;
+  margin-bottom: 100px;
+  color: #f8f9fe;
+  position: relative;
 `;

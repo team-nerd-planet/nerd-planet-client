@@ -64,17 +64,22 @@ const FeedsClient = ({
     >
       {feeds.map((feed) => {
         return (
-          <Invisible key={feed.id} as="li" className="w-[333px] h-[368px]">
-            <FeedItem
-              link={feed.link}
-              thumbnail={feed.thumbnail}
-              title={feed.title}
-              company={feed.company.title}
-              companyLink={feed.company.link}
-              writer={feed.company.name}
-              published={feed.published}
-            />
-          </Invisible>
+          <div
+            key={feed.id}
+            className="w-full h-full flex justify-center items-center"
+          >
+            <Invisible as="li" className="w-[333px] h-[368px]">
+              <FeedItem
+                link={feed.link}
+                thumbnail={feed.thumbnail}
+                title={feed.title}
+                company={feed.company.title}
+                companyLink={feed.company.link}
+                writer={feed.company.name}
+                published={feed.published}
+              />
+            </Invisible>
+          </div>
         );
       })}
     </ScrollArea>

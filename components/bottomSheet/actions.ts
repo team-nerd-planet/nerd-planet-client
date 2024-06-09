@@ -41,7 +41,7 @@ export const subscriptionAction = async ({
   if (result.ok) {
     return {
       ok: true,
-      message: "구독이 완료되었습니다.",
+      message: "인증 메일을 발송했습니다.",
     };
   }
 
