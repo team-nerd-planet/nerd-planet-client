@@ -1,9 +1,9 @@
 import { approveSubscription } from "services/subscription/queries";
 
 const ApprovePage = async ({
-  searchParams: { token },
+  params: { token },
 }: {
-  searchParams: {
+  params: {
     token?: string;
   };
 }) => {
