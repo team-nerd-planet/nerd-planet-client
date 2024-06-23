@@ -8,7 +8,7 @@ const Navbar = () => {
     <header className="z-[9999] sticky top-0 flex w-full h-header justify-between items-center px-6 bg-background">
       <div className="flex h-full gap-[60px]">
         <LogoWithText />
-        <nav className="hidden tablet:flex gap-2 h-full items-center">
+        <nav className="hidden tablet:flex gap-12 h-full items-center">
           {pages.map(({ name, link }) => {
             return (
               <Link key={name} className="font-semibold text-[#F8F9FE]" href={link}>
