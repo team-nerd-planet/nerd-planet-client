@@ -3,10 +3,17 @@
 import Badge from "components/badge";
 import Input from "components/input";
 import FilterIcon from "icons/filter-icon.svg";
-import { useEffect, useRef, useState, type PropsWithChildren } from "react";
+import {
+  useCallback,
+  useEffect,
+  useState,
+  type PropsWithChildren,
+} from "react";
 import type { CompanySize } from "services/feed/types";
 import styled from "@emotion/styled";
 import { toast } from "react-toastify";
+import { companyList } from "constants/company";
+import { debounce } from "lodash";
 
 const MAX_COMPANY_COUNT = 3;
 
@@ -22,7 +29,12 @@ export const CompanyNameForm = ({
   setSearchCompanyName,
 }: CompanyNameProps) => {
   const [value, setValue] = useState<string>("");
-
+  const [list, setList] = useState<
+    {
+      companyName: string;
+      id: number;
+    }[]
+  >([]);
   const handleRemoveHashtag = (hashtagToRemove: string) => {
     const filteredList = searchCompanyName.filter(
       (hashtag) => hashtag !== hashtagToRemove
@@ -33,20 +45,127 @@ export const CompanyNameForm = ({
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.stopPropagation();
     setValue(event.target.value);
+
+    setList(
+      companyList.filter((company) =>
+        company.companyName.includes(event.target.value)
+      )
+    );
   };
+
+  const debouncedHandleInput = useCallback(
+    debounce((event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === "Enter" && value !== "") {
+        if (searchCompanyName.length >= MAX_COMPANY_COUNT) {
+          toast.error(`최대 ${MAX_COMPANY_COUNT}개까지 등록 가능합니다.`);
+          return;
+        }
+        // companyList에 있는 기업명이 아닌 경우
+        if (!companyList.find((company) => company.companyName === value)) {
+          toast.error("존재하지 않는 기업명입니다.");
+          setValue("");
+          return;
+        }
+        if (!searchCompanyName.find((hashtag) => hashtag === value)) {
+          setSearchCompanyName([...searchCompanyName, value]);
+        }
+        setValue("");
+      }
+
+      // 방향키 아래로 눌렀을 때
+      // if (event.key === "ArrowDown" && list.length > 0) {
+      //   const firstLi = document.getElementById("company-list-item-0");
+      //   // 첫 번째 li 태그에 focus를 줌
+      //   if (firstLi) {
+      //     firstLi.setAttribute("tabindex", "0");
+      //     firstLi.focus();
+      //   }
+      // }
+    }, 200),
+    [value]
+  );
 
   const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     event.stopPropagation();
-    if (event.key === "Enter" && value !== "") {
-      if (searchCompanyName.length >= MAX_COMPANY_COUNT) {
-        toast.error(`최대 ${MAX_COMPANY_COUNT}개까지 등록 가능합니다.`);
-        return;
+    debouncedHandleInput(event);
+  };
+
+  const debounceHandleListKeyDown = useCallback(
+    debounce((key, currentTarget, searchCompanyName) => {
+      if (key === "Enter") {
+        if (searchCompanyName.length >= MAX_COMPANY_COUNT) {
+          toast.error(`최대 ${MAX_COMPANY_COUNT}개까지 등록 가능합니다.`);
+          return;
+        }
+        // companyList에 있는 기업명이 아닌 경우
+        if (
+          !companyList.find(
+            (company) => company.companyName === currentTarget.textContent
+          )
+        ) {
+          toast.error("존재하지 않는 기업명입니다.");
+          setValue("");
+          return;
+        }
+        if (
+          !searchCompanyName.find(
+            (hashtag: string) => hashtag === currentTarget.textContent
+          )
+        ) {
+          setSearchCompanyName([
+            ...searchCompanyName,
+            currentTarget.textContent,
+          ]);
+        }
+        setValue("");
       }
-      if (!searchCompanyName.find((hashtag) => hashtag === value)) {
-        setSearchCompanyName([...searchCompanyName, value]);
+      // 방향키 위로 눌렀을 때
+      if (key === "ArrowUp") {
+        // 내 형제 중에 이전 li 태그를 가져옴
+        const prevLi = currentTarget.previousElementSibling as HTMLLIElement;
+        // 이전 li 태그가 있으면
+        if (prevLi) {
+          // 이전 li
+          prevLi.focus();
+
+          // 현재 li 태그에 tabindex를 제거
+          currentTarget.removeAttribute("tabindex");
+
+          // 이전 li 태그에 tabindex를 추가
+          prevLi.setAttribute("tabindex", "0");
+
+          return;
+        }
       }
-      setValue("");
-    }
+
+      // 방향키 아래로 눌렀을 때
+      if (key === "ArrowDown") {
+        // 내 형제 중에 다음 li 태그를 가져옴
+        const nextLi = currentTarget.nextElementSibling as HTMLLIElement;
+        // 다음 li 태그가 있으면
+        if (nextLi) {
+          // 다음 li
+          nextLi.focus();
+
+          // 현재 li 태그에 tabindex를 제거
+          currentTarget.removeAttribute("tabindex");
+
+          // 다음 li 태그에 tabindex를 추가
+          nextLi.setAttribute("tabindex", "0");
+
+          return;
+        }
+      }
+    }, 300),
+    []
+  );
+
+  const handleListKeyDown = (event: React.KeyboardEvent<HTMLLIElement>) => {
+    const currentTarget = event.currentTarget;
+    const key = event.key;
+    const latestSearchCompanyName = [...searchCompanyName];
+    event.stopPropagation();
+    debounceHandleListKeyDown(key, currentTarget, latestSearchCompanyName);
   };
 
   useEffect(() => {
@@ -66,14 +185,49 @@ export const CompanyNameForm = ({
           (꼭 받고 싶은 기업명을 태그로 입력)
         </span>
       </Label>
-      <Input
-        value={value}
-        onChange={handleInputChange}
-        onKeyDown={handleInputKeyDown}
-        className="w-[208px] h-[40px]"
-        defaultValue={""}
-        placeholder="기업명을 입력해주세요"
-      />
+      <div
+        style={{
+          position: "relative",
+        }}
+      >
+        <Input
+          value={value}
+          onChange={handleInputChange}
+          onKeyDown={handleInputKeyDown}
+          className="w-[208px] h-[40px]"
+          placeholder="기업명을 검색하세요!"
+        />
+        {value && list.length > 0 && (
+          <Ul id="company-list">
+            {list.map(({ companyName }, index) => (
+              <Li
+                id={"company-list-item-" + index}
+                key={index}
+                onClick={() => {
+                  if (searchCompanyName.length >= MAX_COMPANY_COUNT) {
+                    toast.error(
+                      `최대 ${MAX_COMPANY_COUNT}개까지 등록 가능합니다.`
+                    );
+                    return;
+                  }
+
+                  if (
+                    !searchCompanyName.find(
+                      (hashtag) => hashtag === companyName
+                    )
+                  ) {
+                    setSearchCompanyName([...searchCompanyName, companyName]);
+                  }
+                  setValue("");
+                }}
+                onKeyDown={handleListKeyDown}
+              >
+                {companyName}
+              </Li>
+            ))}
+          </Ul>
+        )}
+      </div>
       <TagContainer>
         {searchCompanyName.map((hashtag, index) => (
           <TagSpan key={index}>
@@ -311,4 +465,49 @@ const TagRemoveButton = styled.button`
   cursor: pointer;
   outline: none;
   margin-left: 0.5rem;
+`;
+
+const Ul = styled.ul`
+  position: absolute;
+  top: 40px;
+  left: 0;
+  width: 208px;
+  border: 1px solid #ccc;
+  border-top: none;
+  background-color: white;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 152px;
+  overflow-y: auto;
+  z-index: 1000;
+  height: 192px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  background-color: #1c1c20;
+  // 좌하단 둥근 모서리
+  // border-bottom-left-radius: 5px;
+  // border-bottom-right-radius: 5px;
+  border-radius: 5px;
+`;
+
+const Li = styled.li`
+  padding: 10px;
+  cursor: pointer;
+  color: white;
+  font-size: 12px;
+
+  &:hover {
+    background-color: #33333b;
+  }
+
+  &:focus {
+    background-color: #33333b;
+    outline: none;
+  }
 `;

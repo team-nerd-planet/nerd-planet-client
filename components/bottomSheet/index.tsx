@@ -7,7 +7,7 @@ import {
   JobForm,
   SkillForm,
 } from "components/feed/feed-filter/feed-filter-only-input";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { toast } from "react-toastify";
 import { getJobTags, getSkillTags } from "services/feed/queries";
@@ -15,6 +15,7 @@ import { CompanySize } from "services/feed/types";
 import { switchCompanySize } from "services/feed/utils";
 import { subscriptionAction } from "./actions";
 import Image from "next/image";
+import { companyMap } from "constants/company";
 
 type FormFieldValues = {
   email: string;
@@ -40,6 +41,7 @@ const BottomSheet = () => {
   const [modal, setModal] = useState(false);
   // 파라미터 가져오기
   const searchParams = useSearchParams();
+  const pathname = usePathname();
   const params = useMemo(() => {
     return new URLSearchParams(searchParams);
   }, [searchParams]);
@@ -97,7 +99,9 @@ const BottomSheet = () => {
         preferredCompanySizeArr: form.searchCompanySize.map((size) =>
           switchCompanySize(size as CompanySize)
         ),
-        preferredCompanyArr: [],
+        preferredCompanyArr: form.searchCompanyName.map(
+          (name) => companyMap[name]
+        ),
         preferredJobArr: form.searchJobIds,
         preferredSkillArr: form.searchSkillIds,
       });
@@ -122,6 +126,10 @@ const BottomSheet = () => {
       toast.error(message);
     });
   };
+
+  console.log(pathname);
+
+  if (pathname !== "/") return null;
 
   return (
     <div className="z-[99] w-full flex justify-center fixed bottom-0">

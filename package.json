@@ -16,6 +16,7 @@
     "@emotion/styled": "^11.11.5",
     "@next/third-parties": "^14.2.3",
     "@types/express": "^4.17.21",
+    "@types/lodash": "^4.17.5",
     "clsx": "^2.1.1",
     "express": "^4.19.2",
     "http-proxy-middleware": "^3.0.0",
