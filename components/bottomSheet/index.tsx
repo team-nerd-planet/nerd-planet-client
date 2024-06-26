@@ -147,12 +147,13 @@ const BottomSheet = () => {
             {open ? "괜찮아요" : "구독하기"}
           </button>
           <div className="absolute w-full h-full flex justify-center items-center transition-all">
-            <svg
+            <Svg
               width="24"
               height="24"
               viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
+              onClick={() => setOpen(!open)}
             >
               {open ? (
                 <path
@@ -165,7 +166,7 @@ const BottomSheet = () => {
                   fill="#F8F9FE"
                 />
               )}
-            </svg>
+            </Svg>
           </div>
         </div>
         <Box
@@ -384,4 +385,13 @@ const Content = styled.div`
   margin-bottom: 100px;
   color: #f8f9fe;
   position: relative;
+`;
+
+const Svg = styled.svg`
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+
+  &:hover {
+    opacity: 0.8;
+  }
 `;
