@@ -1,6 +1,6 @@
 "use server";
 
-import { applySubscription } from "services/subscription/queries";
+import { applySubscription } from "@services/subscription/queries";
 
 export const subscriptionAction = async ({
   division,

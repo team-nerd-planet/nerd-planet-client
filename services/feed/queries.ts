@@ -1,6 +1,6 @@
 "use server";
 
-import { tags } from "services/tags";
+import { tags } from "@services/tags";
 import type { CompanySize, Feed } from "./types";
 import { switchCompanySize } from "./utils";
 

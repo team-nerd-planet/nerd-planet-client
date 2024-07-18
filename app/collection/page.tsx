@@ -1,7 +1,7 @@
 "use client";
 
 import styled from "@emotion/styled";
-import { companyList } from "constants/company";
+import { companyList } from "@/constants/company";
 
 const CollectionPage = () => {
   return (

@@ -1,7 +1,7 @@
 "use client";
 
 import Hamburger from "icons/hamburger.svg";
-import { cn } from "lib/utils";
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useState } from "react";
 import { pages } from "../constants";

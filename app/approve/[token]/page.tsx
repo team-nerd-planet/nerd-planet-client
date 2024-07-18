@@ -1,4 +1,4 @@
-import { approveSubscription } from "services/subscription/queries";
+import { approveSubscription } from "@services/subscription/queries";
 
 const ApprovePage = async ({
   params: { token },

@@ -6,16 +6,16 @@ import {
   CompanySizeForm,
   JobForm,
   SkillForm,
-} from "components/feed/feed-filter/feed-filter-only-input";
+} from "@components/feed/feed-filter/feed-filter-only-input";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { toast } from "react-toastify";
-import { getJobTags, getSkillTags } from "services/feed/queries";
-import { CompanySize } from "services/feed/types";
-import { switchCompanySize } from "services/feed/utils";
+import { getJobTags, getSkillTags } from "@services/feed/queries";
+import { CompanySize } from "@services/feed/types";
+import { switchCompanySize } from "@services/feed/utils";
 import { subscriptionAction } from "./actions";
 import Image from "next/image";
-import { companyMap } from "constants/company";
+import { companyMap } from "@/constants/company";
 
 type FormFieldValues = {
   email: string;
@@ -126,8 +126,6 @@ const BottomSheet = () => {
       toast.error(message);
     });
   };
-
-  console.log(pathname);
 
   if (pathname !== "/") return null;
 

@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { getJobTags, getSkillTags } from "services/feed/queries";
-import type { CompanySize } from "services/feed/types";
+import { getJobTags, getSkillTags } from "@services/feed/queries";
+import type { CompanySize } from "@services/feed/types";
 import {
   CompanyNameForm,
   CompanySizeForm,

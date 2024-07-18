@@ -1,8 +1,8 @@
-import Navbar from "components/layout/navbar";
+import Navbar from "@components/layout/navbar";
 import type { Metadata } from "next";
 import { Suspense, type ReactNode } from "react";
 import "./globals.css";
-import BottomSheet from "components/bottomSheet";
+import BottomSheet from "@components/bottomSheet";
 import { ToastContainer, Flip } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google";
@@ -121,10 +121,10 @@ export default function RootLayout({
           content={process.env.NEXT_PUBLIC_NAVER_SITE_VERIFICATION}
         />
       </head>
-      <body className="relative">
+      <body className="relative scrollbar-hide">
         <Navbar />
-        <main className="w-full min-h-[calc(100vh-var(--header-height))] bg-[#1C1C20]">
-          <div className="max-w-screen-laptop mx-auto px-[12px] tablet:px-[24px] laptop:px-[36px]">
+        <main className="w-full min-h-[calc(100vh-var(--header-height))] bg-[#1C1C20] scrollbar-hide">
+          <div className="max-w-screen-laptop mx-auto px-[12px] tablet:px-[24px] laptop:px-[36px] scrollbar-hide">
             {children}
           </div>
         </main>

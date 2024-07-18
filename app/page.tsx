@@ -1,12 +1,12 @@
-import Banner from "components/banner";
-import { FeedFilter, LineFeedFilter } from "components/feed/feed-filter";
+import Banner from "@components/banner";
+import { FeedFilter, LineFeedFilter } from "@components/feed/feed-filter";
 import Feeds, {
   FeedsErrorFallback,
   FeedsSkeleton,
-} from "components/feed/feeds";
+} from "@components/feed/feeds";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import type { CompanySize } from "services/feed/types";
+import type { CompanySize } from "@services/feed/types";
 
 export type HomeSearchParams = {
   page: string;
