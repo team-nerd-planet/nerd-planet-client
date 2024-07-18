@@ -1,11 +1,7 @@
 "use client";
 
-import { cn } from "lib/utils";
-import {
-  useEffect,
-  type ReactElement,
-  type ReactNode,
-} from "react";
+import { cn } from "@/lib/utils";
+import { useEffect, type ReactElement, type ReactNode } from "react";
 import { useInView } from "react-intersection-observer";
 
 type ScrollAreaProps = {
@@ -38,9 +34,7 @@ const ScrollArea = ({
 
   return (
     <div className={containerClassName}>
-      <ul className={cn("overflow-y-auto", className)}>
-        {children}
-      </ul>
+      <ul className={cn("overflow-y-auto", className)}>{children}</ul>
       <div ref={ref}>{ScrollEndPlaceholder}</div>
     </div>
   );

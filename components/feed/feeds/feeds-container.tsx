@@ -1,5 +1,5 @@
-import { getFeeds } from "services/feed/queries";
-import type { CompanySize } from "services/feed/types";
+import { getFeeds } from "@services/feed/queries";
+import type { CompanySize } from "@services/feed/types";
 import FeedsClient from "./feeds-client";
 
 type FeedsProps = {

@@ -18,7 +18,9 @@
       }
     ],
     "paths": {
-      "*": ["./*"],
+      "@/*": ["./*"],
+      "@components/*": ["./components/*"],
+      "@services/*": ["./services/*"],
       "icons/*": ["./public/icons/*"]
     }
   },

@@ -1,6 +1,6 @@
 "use client";
 
-import Logo from "components/icons/logo";
+import Logo from "@components/icons/logo";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import styled from "@emotion/styled";

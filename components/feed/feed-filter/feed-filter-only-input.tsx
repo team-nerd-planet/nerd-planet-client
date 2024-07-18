@@ -1,7 +1,7 @@
 "use client";
 
-import Badge from "components/badge";
-import Input from "components/input";
+import Badge from "@components/badge";
+import Input from "@components/input";
 import FilterIcon from "icons/filter-icon.svg";
 import {
   useCallback,
@@ -9,10 +9,10 @@ import {
   useState,
   type PropsWithChildren,
 } from "react";
-import type { CompanySize } from "services/feed/types";
+import type { CompanySize } from "@services/feed/types";
 import styled from "@emotion/styled";
 import { toast } from "react-toastify";
-import { companyList } from "constants/company";
+import { companyList } from "@/constants/company";
 import { debounce } from "lodash";
 
 const MAX_COMPANY_COUNT = 3;

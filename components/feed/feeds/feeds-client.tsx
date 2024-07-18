@@ -1,11 +1,11 @@
 "use client";
 
-import Invisible from "components/invisible";
-import ScrollArea from "components/scroll-area";
+import Invisible from "@components/invisible";
+import ScrollArea from "@components/scroll-area";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { HomeSearchParamsKeys } from "params/home";
+import { HomeSearchParamsKeys } from "@/params/home";
 import { useEffect, useState } from "react";
-import { type Feed } from "services/feed/types";
+import { type Feed } from "@services/feed/types";
 import FeedItem from "../feed-item";
 import { FeedItemSkeleton } from "../feed-item/feed-item";
 

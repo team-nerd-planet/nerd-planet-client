@@ -1,4 +1,4 @@
-import Logo from "components/icons/logo";
+import Logo from "@components/icons/logo";
 import Link from "next/link";
 import { pages } from "./constants";
 import MobileMenu from "./mobile-menu";

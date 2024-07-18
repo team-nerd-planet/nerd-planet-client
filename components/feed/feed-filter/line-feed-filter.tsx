@@ -1,4 +1,4 @@
-import { CompanySize } from "services/feed/types";
+import { CompanySize } from "@services/feed/types";
 import { FeedFilterContainer } from "./feed-filter-container";
 
 const LineFeedFilter = ({
