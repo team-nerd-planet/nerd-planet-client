@@ -2,6 +2,7 @@ import nextPWA from "next-pwa";
 
 const withPWA = nextPWA({
   dest: "public",
+  disableDevLogs: true,
 });
 
 /** @type {import('next').NextConfig} */
